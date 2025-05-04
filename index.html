@@ -231,12 +231,27 @@
   const collapseMenu = document.querySelector('.navbar-collapse');
 
   document.querySelectorAll('.navbar-nav .nav-link').forEach(link => {
-    link.addEventListener('click', () => {
+    link.addEventListener('click', function (e) {
+      const targetId = this.getAttribute("href");
+
+      // Fecha o menu se estiver visível
       if (window.getComputedStyle(navbarToggler).display !== 'none' && collapseMenu.classList.contains('show')) {
         navbarToggler.click();
+
+        // Aguarda o menu fechar antes de fazer o scroll
+        setTimeout(() => {
+          if (targetId.startsWith("#") && document.querySelector(targetId)) {
+            const yOffset = -70; // ajuste para compensar a altura do menu
+            const element = document.querySelector(targetId);
+            const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+            window.scrollTo({ top: y, behavior: 'smooth' });
+          }
+        }, 300); // tempo estimado para o menu fechar
+        e.preventDefault(); // evita o scroll padrão imediato
       }
     });
   });
+
 
   // Fecha o menu ao clicar no logo (marca)
   document.getElementById('brand-link').addEventListener('click', () => {
